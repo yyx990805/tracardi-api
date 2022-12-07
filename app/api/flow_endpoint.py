@@ -114,7 +114,7 @@ async def get_flow(id: str, response: Response):
     """
     Returns production version of flow with given ID (str)
     """
-    flow_record = await storage.driver.flow.load_record(id)  # type: FlowRecord
+    flow_record = await storage.driver.flow.load_record(id)
 
     if flow_record is None:
         response.status_code = 404
@@ -161,9 +161,10 @@ async def upsert_flow(flow: Flow):
     """
     old_flow_record = await storage.driver.flow.load_record(flow.id)
     flow_record = flow.get_production_workflow_record()
-    if flow_record is None or old_flow_record is None:
-        raise HTTPException(status_code=406, detail="Can not deploy missing draft workflow")
-    flow_record.backup = old_flow_record.production
+    if flow_record is None:
+        raise HTTPException(status_code=406, detail="Can not deploy missing workflow. Flow is empty")
+    if old_flow_record is not None:
+        flow_record.backup = old_flow_record.production
     flow_record.deployed = True
     return await _store_record(flow_record)
 

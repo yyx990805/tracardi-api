@@ -42,17 +42,11 @@ async def upsert_rule(rule: Rule):
         raise HTTPException(status_code=422, detail='Incorrect source id: `{}`'.format(rule.source.id))
 
     flow_record = await storage.driver.flow.load_record(rule.flow.id)
-    add_flow_task = None
     if flow_record is None:
         new_flow = FlowMetaData(id=rule.flow.id, name=rule.flow.name, description="", type='collection')
-        add_flow_task = asyncio.create_task(storage.driver.flow.save(new_flow))
+        await storage.driver.flow.save(new_flow)
 
-    add_rule_task = asyncio.create_task(storage.driver.rule.save(rule))
-
-    if add_flow_task:
-        await add_flow_task
-
-    result = await add_rule_task
+    result = await storage.driver.rule.save(rule)
 
     await storage.driver.rule.refresh()
 
