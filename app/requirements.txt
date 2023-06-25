@@ -4,7 +4,7 @@ uvicorn[standard]>=0.18.3
 pydantic==2.0b3
 aiofiles==22.1.0
 aioredis==2.0.1
-hiredis==2.0.0
+hiredis==2.2.3
 redis==4.3.4
 elasticsearch[async]==7.10.1
 prodict==0.8.18
