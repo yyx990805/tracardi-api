@@ -37,7 +37,6 @@ from app.api import rule_endpoint, resource_endpoint, event_endpoint, \
     delete_indices_endpoint, migration_endpoint, report_endpoint, live_segments_endpoint, \
     console_log_endpoint, event_type_management, \
     bridge_endpoint, entity_endpoint, staging_endpoint, customer_endpoint, event_to_profile
-from app.api.graphql.profile import graphql_profiles
 from app.api.track import event_server_endpoint
 from tracardi.config import tracardi
 from tracardi.exceptions.log_handler import log_handler
