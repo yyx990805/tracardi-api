@@ -4,14 +4,12 @@ from datetime import datetime
 
 from app.middleware.context import ContextRequestMiddleware
 from tracardi.service.license import License, SCHEDULER, IDENTIFICATION, COMPLIANCE, RESHAPING, REDIRECTS, VALIDATOR, \
-    LICENSE
+    LICENSE, MULTI_TENANT
 
 _local_dir = os.path.dirname(__file__)
 sys.path.append(f"{_local_dir}/api/proto/stubs")
 
 import logging
-import asyncio
-from random import randint
 from starlette.responses import JSONResponse
 from time import time
 from app.config import server
@@ -35,7 +33,7 @@ from app.api import rule_endpoint, resource_endpoint, event_endpoint, \
     user_account_endpoint, \
     install_endpoint, \
     delete_indices_endpoint, migration_endpoint, report_endpoint, live_segments_endpoint, \
-    console_log_endpoint, event_type_management, \
+    console_log_endpoint, event_type_mapping, \
     bridge_endpoint, entity_endpoint, staging_endpoint, customer_endpoint, event_to_profile
 from app.api.track import event_server_endpoint
 from tracardi.config import tracardi
@@ -80,6 +78,13 @@ if License.has_service(LICENSE):
 else:
     event_to_profile_copy = get_router(prefix="/events/copy")
     event_props_to_event_traits_copy = get_router(prefix="/events/index")
+
+
+if License.has_service(MULTI_TENANT):
+    from com_tracardi.endpoint import tenant_install_endpoint
+else:
+    tenant_install_endpoint = get_router(prefix="/tenant")
+
 
 logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__name__)
@@ -264,9 +269,9 @@ application.include_router(live_segments_endpoint.router)
 application.include_router(event_reshaping_schema_endpoint.router)
 application.include_router(event_validator_endpoint.router)
 application.include_router(console_log_endpoint.router)
-application.include_router(event_type_management.router)
+application.include_router(event_type_mapping.router)
 application.include_router(event_source_redirects.router)
-# application.include_router(last_flow_ws.router)
+application.include_router(tenant_install_endpoint.router)
 application.include_router(bridge_endpoint.router)
 application.include_router(entity_endpoint.router)
 application.include_router(consent_data_compliance_endpoint.router)
