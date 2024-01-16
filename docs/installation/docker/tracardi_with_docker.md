@@ -56,7 +56,7 @@ docker run -p 8787:80 tracardi/tracardi-gui:<last-version> #(1)
 
 !!! Warning "Please use the version tag"
 
-    Please use only docker with version tag. See the latest version in docker hub. 
+    Please use only docker with version tag. See the latest version in [docker hub](https://hub.docker.com/r/tracardi/tracardi-gui/tags).
 
 ## Run Tracardi Graphical User Interface
 
